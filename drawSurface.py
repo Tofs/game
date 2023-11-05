@@ -9,9 +9,6 @@ class GameObject:
         self.velocity = pygame.Vector2(0,0)
         self.size = 10
 
-    def update(self):
-        self.position += self.velocity
-        self.velocity *= 0.95
 
 class drawSurface:
     def __init__(self, objectList):

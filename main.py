@@ -4,7 +4,6 @@ import logging
 import time
 import drawSurface
 
-
 #configure logging
 logging.basicConfig(level=logging.DEBUG)
 logging.info("Start game!")
@@ -23,7 +22,13 @@ clock = pygame.time.Clock()
 logging.info("Enter mainloop")
 run = True
 
+class gameLogic:
+    def __init__(self, screen):
+        self.screen = screen
 
+    def update(self, gameObject: drawSurface.GameObject):
+        gameObject.position += self.velocity
+        gameObject.velocity *= 0.95
 
 while run:
     start_time = time.time()
@@ -47,19 +52,14 @@ while run:
     if keys[pygame.K_d]:
         activeObject.velocity.x += 30 * dt
 
-
-
-
-
     logging.info("Update")
     for updateObject in objectList:
         updateObject.update()
 
-
     game.draw()
 
-    execTime = time.time() - start_time
-    logging.debug("loop execution time: " + str(execTime))
     dt = clock.tick(60) / 1000
+    util = 1000 / 60
+    logging.debug("loop execution time: " + str(dt * 1000) + "ms utilazation " + str(util) + "%")
 
 logging.info("End game!")
