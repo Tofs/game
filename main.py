@@ -1,8 +1,48 @@
 from cmath import log
+from pygame import Vector2
 import pygame
 import logging
 import time
-import drawSurface
+from objects import GameObject
+from drawSurface import DrawSurface
+
+type gameObjectList = list[GameObject]
+class GameLogic:
+    def __init__(self, screen :DrawSurface, objectList: gameObjectList):
+        self.screen = screen
+        self.objectList = objectList
+
+
+    def update(self, gameObject: GameObject):
+        bounchBack = 10
+        if gameObject.position.x < 0:
+            gameObject.velocity.x += bounchBack
+        if gameObject.position.y < 0:
+            gameObject.velocity.y += bounchBack
+
+        if gameObject.position.x > 1280:
+            gameObject.velocity.x -= bounchBack
+        if gameObject.position.y > screen.screen.get_height():
+            gameObject.velocity.y -= bounchBack
+
+        
+        rectSize = gameObject.size * 1.5
+        thisRect = pygame.Rect(gameObject.position.x, gameObject.position.y, 0,0).inflate(rectSize,rectSize)
+
+        for collideObject in self.objectList:
+            if collideObject is gameObject:
+                continue
+            otherRect = pygame.Rect(collideObject.position.x, collideObject.position.y, 0,0).inflate(rectSize,rectSize)
+            if thisRect.colliderect(otherRect):
+                collideObject.velocity = Vector2()
+                gameObject.velocity = Vector2()
+                
+
+
+
+        gameObject.position += gameObject.velocity
+        gameObject.velocity *= 0.95
+
 
 #configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -10,25 +50,19 @@ logging.info("Start game!")
 
 
 #object deff
-objectList = []
-activeObject = drawSurface.GameObject()
+objectList : gameObjectList = []
+activeObject: GameObject = GameObject()
 objectList.append(activeObject)
 
 # create surface
 logging.debug("Configure pygame")
-game = drawSurface.drawSurface(objectList)
+screen = DrawSurface(objectList)
+logic  = GameLogic(screen, objectList)
 clock = pygame.time.Clock()
 
 logging.info("Enter mainloop")
 run = True
 
-class gameLogic:
-    def __init__(self, screen):
-        self.screen = screen
-
-    def update(self, gameObject: drawSurface.GameObject):
-        gameObject.position += self.velocity
-        gameObject.velocity *= 0.95
 
 while run:
     start_time = time.time()
@@ -39,7 +73,7 @@ while run:
             run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                activeObject = drawSurface.GameObject()
+                activeObject = GameObject()
                 objectList.append(activeObject)
 
     keys = pygame.key.get_pressed()
@@ -54,9 +88,9 @@ while run:
 
     logging.info("Update")
     for updateObject in objectList:
-        updateObject.update()
+        logic.update(updateObject)
 
-    game.draw()
+    screen.draw()
 
     dt = clock.tick(60) / 1000
     util = 1000 / 60

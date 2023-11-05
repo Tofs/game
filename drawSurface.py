@@ -2,15 +2,9 @@
 import logging
 import pygame
 
-class GameObject:
-    def __init__(self):
-        self.color = "pink"
-        self.position = pygame.Vector2(0,0)
-        self.velocity = pygame.Vector2(0,0)
-        self.size = 10
+from objects import GameObject
 
-
-class drawSurface:
+class DrawSurface:
     def __init__(self, objectList):
         logging.info("init draw")
         pygame.init()
@@ -21,7 +15,8 @@ class drawSurface:
     def DrawObject(self, drawObject: GameObject):
 
         point = pygame.mouse.get_pos()
-        rect = pygame.Rect(drawObject.position.x, drawObject.position.y, 0,0).inflate(drawObject.size, drawObject.size)
+        rectSize = drawObject.size * 1.5
+        rect = pygame.Rect(drawObject.position.x, drawObject.position.y, 0,0).inflate(rectSize,rectSize)
         collide = rect.collidepoint(point)
         color = (255, 0, 0) if collide else drawObject.color
         pygame.draw.circle(self.screen, color, drawObject.position, drawObject.size)
