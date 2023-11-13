@@ -1,9 +1,8 @@
-from cmath import log
 from pygame import Vector2
 import pygame
 import logging
 import time
-from objects import GameObject
+from objects import GameObject, Spawner
 from drawSurface import DrawSurface
 
 type gameObjectList = list[GameObject]
@@ -51,7 +50,12 @@ logging.info("Start game!")
 
 #object deff
 objectList : gameObjectList = []
+spawnpoint: GameObject = Spawner(
+    position=Vector2(0, 400),
+    color="red"
+)
 activeObject: GameObject = GameObject()
+objectList.append(spawnpoint)
 objectList.append(activeObject)
 
 # create surface
@@ -65,6 +69,8 @@ run = True
 
 
 while run:
+
+
     start_time = time.time()
 
     logging.info("Handle input")
