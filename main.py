@@ -2,45 +2,9 @@ from pygame import Vector2
 import pygame
 import logging
 import time
-from objects import GameObject, Spawner
+from objects import GameLogic, GameObject, Spawner, gameObjectList
 from drawSurface import DrawSurface
 
-type gameObjectList = list[GameObject]
-class GameLogic:
-    def __init__(self, screen :DrawSurface, objectList: gameObjectList):
-        self.screen = screen
-        self.objectList = objectList
-
-
-    def update(self, gameObject: GameObject):
-        bounchBack = 10
-        if gameObject.position.x < 0:
-            gameObject.velocity.x += bounchBack
-        if gameObject.position.y < 0:
-            gameObject.velocity.y += bounchBack
-
-        if gameObject.position.x > 1280:
-            gameObject.velocity.x -= bounchBack
-        if gameObject.position.y > screen.screen.get_height():
-            gameObject.velocity.y -= bounchBack
-
-        
-        rectSize = gameObject.size * 1.5
-        thisRect = pygame.Rect(gameObject.position.x, gameObject.position.y, 0,0).inflate(rectSize,rectSize)
-
-        for collideObject in self.objectList:
-            if collideObject is gameObject:
-                continue
-            otherRect = pygame.Rect(collideObject.position.x, collideObject.position.y, 0,0).inflate(rectSize,rectSize)
-            if thisRect.colliderect(otherRect):
-                collideObject.velocity = Vector2()
-                gameObject.velocity = Vector2()
-                
-
-
-
-        gameObject.position += gameObject.velocity
-        gameObject.velocity *= 0.95
 
 
 #configure logging
@@ -52,16 +16,15 @@ logging.info("Start game!")
 objectList : gameObjectList = []
 spawnpoint: GameObject = Spawner(
     position=Vector2(0, 400),
-    color="red"
 )
 activeObject: GameObject = GameObject()
 objectList.append(spawnpoint)
 objectList.append(activeObject)
+gameLogic = GameLogic(objectList, activeObject)
 
 # create surface
 logging.debug("Configure pygame")
 screen = DrawSurface(objectList)
-logic  = GameLogic(screen, objectList)
 clock = pygame.time.Clock()
 
 logging.info("Enter mainloop")
@@ -94,7 +57,7 @@ while run:
 
     logging.info("Update")
     for updateObject in objectList:
-        logic.update(updateObject)
+        updateObject.update(gameLogic)
 
     screen.draw()
 
