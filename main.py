@@ -32,8 +32,6 @@ run = True
 
 
 while run:
-
-
     start_time = time.time()
 
     logging.info("Handle input")
@@ -64,5 +62,8 @@ while run:
     dt = clock.tick(60) / 1000
     util = 1000 / 60
     logging.debug("loop execution time: " + str(dt * 1000) + "ms utilazation " + str(util) + "%")
+
+    if not gameLogic.playerAlive:
+        run = False
 
 logging.info("End game!")
