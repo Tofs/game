@@ -15,10 +15,10 @@ class GameLogic:
     def __init__(self, gameObjects: gameObjectList, chaseTarget: BaseGameObject):
         self.gameObjects = gameObjects
         self.chaseTarget = chaseTarget
-        self.playerAlive = True
+        self.lifeLeft = 3
     
     def End(self):
-        self.playerAlive = False
+        self.lifeLeft = 0
 
 class GameObject(BaseGameObject):
     def __init__(self, position: Vector2 = Vector2(0, 0), color: str = "pink"):

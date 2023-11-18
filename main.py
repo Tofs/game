@@ -31,6 +31,7 @@ logging.info("Enter mainloop")
 run = True
 
 
+
 while run:
     start_time = time.time()
 
@@ -57,13 +58,13 @@ while run:
     for updateObject in objectList:
         updateObject.update(gameLogic)
 
-    screen.draw()
+    screen.draw(gamelogic=gameLogic)
 
     dt = clock.tick(60) / 1000
     util = 1000 / 60
     logging.debug("loop execution time: " + str(dt * 1000) + "ms utilazation " + str(util) + "%")
 
-    if not gameLogic.playerAlive:
+    if not gameLogic.lifeLeft:
         run = False
 
 logging.info("End game!")

@@ -1,8 +1,9 @@
 
 import logging
 import pygame
+from pygame import Vector2
+from objects import GameObject, GameLogic
 
-from objects import GameObject
 
 class DrawSurface:
     def __init__(self, objectList):
@@ -12,6 +13,7 @@ class DrawSurface:
         self.screen =  pygame.display.set_mode((1280, 800))
         self.objectList = objectList
 
+
     def DrawObject(self, drawObject: GameObject):
 
         point = pygame.mouse.get_pos()
@@ -20,12 +22,30 @@ class DrawSurface:
         collide = rect.collidepoint(point)
         color = (255, 0, 0) if collide else drawObject.color
         pygame.draw.circle(self.screen, color, drawObject.position, drawObject.size)
+
+    def DrawText(self, text: str, position : Vector2):
+        #tet stuff
+        green = (0, 255, 0)
+        blue = (0, 0, 128)
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        self.text = font.render(text, True, green, blue)
+        self.textRect = self.text.get_rect()
+
+        # set the center of the rectangular object.
+        self.textRect.center = (position.x, position.y)
+        self.screen.blit(self.text, self.textRect)
+
+
         
-    def draw(self):
+    def draw(self, gamelogic : GameLogic):
         logging.info("Draw")
         self.screen.fill("blue")
 
         for drawObject in self.objectList:
             self.DrawObject(drawObject)
 
+
+        self.DrawText(text=f"Health: '{gamelogic.lifeLeft}'", 
+                    position=Vector2(1280/2, 800/2))
+        
         pygame.display.flip()
