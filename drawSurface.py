@@ -32,7 +32,7 @@ class DrawSurface:
         self.textRect = self.text.get_rect()
 
         # set the center of the rectangular object.
-        self.textRect.center = (position.x, position.y)
+        self.textRect.topleft = (position.x, position.y)
         self.screen.blit(self.text, self.textRect)
 
 
@@ -46,6 +46,6 @@ class DrawSurface:
 
 
         self.DrawText(text=f"Health: '{gamelogic.lifeLeft}'", 
-                    position=Vector2(1280/2, 800/2))
+                    position=Vector2(0, 0))
         
         pygame.display.flip()

@@ -64,7 +64,7 @@ while run:
     util = 1000 / 60
     logging.debug("loop execution time: " + str(dt * 1000) + "ms utilazation " + str(util) + "%")
 
-    if not gameLogic.lifeLeft:
+    if gameLogic.lifeLeft <= 0:
         run = False
 
 logging.info("End game!")

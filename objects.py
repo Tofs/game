@@ -1,4 +1,5 @@
 from re import A
+from time import gmtime
 from pygame import Vector2, Rect
 
 
@@ -17,8 +18,8 @@ class GameLogic:
         self.chaseTarget = chaseTarget
         self.lifeLeft = 3
     
-    def End(self):
-        self.lifeLeft = 0
+    def Delete(self, gameObject: BaseGameObject):
+        self.gameObjects.remove(gameObject)
 
 class GameObject(BaseGameObject):
     def __init__(self, position: Vector2 = Vector2(0, 0), color: str = "pink"):
@@ -46,7 +47,8 @@ class GameObject(BaseGameObject):
                 continue
             otherRect = Rect(collideObject.position.x, collideObject.position.y, 0,0).inflate(rectSize,rectSize)
             if thisRect.colliderect(otherRect):
-                gameLogic.End()
+                gameLogic.Delete(collideObject)
+                gameLogic.lifeLeft -= 1
 
         self.position += self.velocity
         self.velocity *= 0.95
