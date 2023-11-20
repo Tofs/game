@@ -13,9 +13,9 @@ class BaseGameObject:
 type gameObjectList = list[BaseGameObject]
 
 class GameLogic:
-    def __init__(self, gameObjects: gameObjectList, chaseTarget: BaseGameObject):
+    def __init__(self, gameObjects: gameObjectList, castle: BaseGameObject):
         self.gameObjects = gameObjects
-        self.chaseTarget = chaseTarget
+        self.castle = castle
         self.lifeLeft = 3
     
     def Delete(self, gameObject: BaseGameObject):
@@ -41,7 +41,24 @@ class GameObject(BaseGameObject):
         
         rectSize = self.size * 1.5
         thisRect = Rect(self.position.x, self.position.y, 0,0).inflate(rectSize,rectSize)
+        for collideObject in gameLogic.gameObjects:
+            if collideObject is self:
+                continue
+            otherRect = Rect(collideObject.position.x, collideObject.position.y, 0,0).inflate(rectSize,rectSize)
+            if thisRect.colliderect(otherRect):
+                gameLogic.Delete(collideObject)
 
+
+        self.position += self.velocity
+        self.velocity *= 0.95
+
+class Castle(GameObject):
+    def __init__(self, position: Vector2 = Vector2(1280, 400), color: str = "black"):
+        super().__init__(position, color)
+
+    def update(self, gameLogic: GameLogic):
+        rectSize = self.size * 1.5
+        thisRect = Rect(self.position.x, self.position.y, 0,0).inflate(rectSize,rectSize)
         for collideObject in gameLogic.gameObjects:
             if collideObject is self:
                 continue
@@ -50,8 +67,6 @@ class GameObject(BaseGameObject):
                 gameLogic.Delete(collideObject)
                 gameLogic.lifeLeft -= 1
 
-        self.position += self.velocity
-        self.velocity *= 0.95
 
 class Chaser(GameObject):
     def __init__(self, chaseTarget: GameObject,  position: Vector2 = Vector2(0, 0), color: str = "green"):
@@ -106,7 +121,7 @@ class Spawner(GameObject):
     def update(self, gameLogic: GameLogic):
         if self.spawnCoutner / 60 > self.spawnIntervall:
             self.spawnCoutner = 0
-            gameLogic.gameObjects.append(Chaser(chaseTarget=gameLogic.chaseTarget, position=self.position.copy()))
+            gameLogic.gameObjects.append(Chaser(chaseTarget=gameLogic.castle, position=self.position.copy()))
         
 
         self.spawnCoutner += 1

@@ -2,7 +2,7 @@ from pygame import Vector2
 import pygame
 import logging
 import time
-from objects import GameLogic, GameObject, Spawner, gameObjectList
+from objects import Castle, GameLogic, GameObject, Spawner, gameObjectList
 from drawSurface import DrawSurface
 
 
@@ -17,10 +17,12 @@ objectList : gameObjectList = []
 spawnpoint: GameObject = Spawner(
     position=Vector2(0, 400),
 )
-activeObject: GameObject = GameObject()
+defender: GameObject = GameObject()
+castle: GameObject = Castle()
 objectList.append(spawnpoint)
-objectList.append(activeObject)
-gameLogic = GameLogic(objectList, activeObject)
+objectList.append(castle)
+gameLogic = GameLogic(objectList, castle=castle)
+gameLogic.gameObjects.append(defender)
 
 # create surface
 logging.debug("Configure pygame")
@@ -41,18 +43,18 @@ while run:
             run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                activeObject = GameObject()
-                objectList.append(activeObject)
+                defender = GameObject()
+                objectList.append(defender)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
-        activeObject.velocity.y -= 30 * dt
+        defender.velocity.y -= 30 * dt
     if keys[pygame.K_s]:
-        activeObject.velocity.y += 30 * dt
+        defender.velocity.y += 30 * dt
     if keys[pygame.K_a]:
-        activeObject.velocity.x -= 30 * dt
+        defender.velocity.x -= 30 * dt
     if keys[pygame.K_d]:
-        activeObject.velocity.x += 30 * dt
+        defender.velocity.x += 30 * dt
 
     logging.info("Update")
     for updateObject in objectList:
