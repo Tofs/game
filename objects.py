@@ -21,6 +21,10 @@ class GameLogic:
     def Delete(self, gameObject: BaseGameObject):
         self.gameObjects.remove(gameObject)
 
+class Wall:
+    def __init__(self) -> None:
+        pass
+
 class GameObject(BaseGameObject):
     def __init__(self, position: Vector2 = Vector2(0, 0), color: str = "pink"):
         self.velocity = Vector2(0,0)
