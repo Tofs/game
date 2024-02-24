@@ -75,7 +75,7 @@ class Defender(GameObject):
     def update(self, gameLogic: GameLogic):
         if self.buildWall:
            gameLogic.gameObjects.append(Wall(position=self.position.copy()))
-            self.buildWall = False
+           self.buildWall = False
 
         super().update(gameLogic)
 
