@@ -2,7 +2,7 @@ from pygame import Vector2
 import pygame
 import logging
 import time
-from objects import Castle, GameLogic, GameObject, Spawner, gameObjectList
+from objects import Castle, GameLogic, GameObject, Spawner, gameObjectList, Defender
 from drawSurface import DrawSurface
 
 
@@ -17,7 +17,7 @@ objectList : gameObjectList = []
 spawnpoint: GameObject = Spawner(
     position=Vector2(0, 400),
 )
-defender: GameObject = GameObject()
+defender: Defender = Defender()
 castle: GameObject = Castle()
 objectList.append(spawnpoint)
 objectList.append(castle)
@@ -43,8 +43,7 @@ while run:
             run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                defender = GameObject()
-                objectList.append(defender)
+                defender.placeWall()
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -55,6 +54,7 @@ while run:
         defender.velocity.x -= 30 * dt
     if keys[pygame.K_d]:
         defender.velocity.x += 30 * dt
+
 
     logging.info("Update")
     for updateObject in objectList:

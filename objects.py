@@ -12,6 +12,7 @@ class BaseGameObject:
 
 type gameObjectList = list[BaseGameObject]
 
+
 class GameLogic:
     def __init__(self, gameObjects: gameObjectList, castle: BaseGameObject):
         self.gameObjects = gameObjects
@@ -21,9 +22,7 @@ class GameLogic:
     def Delete(self, gameObject: BaseGameObject):
         self.gameObjects.remove(gameObject)
 
-class Wall:
-    def __init__(self) -> None:
-        pass
+
 
 class GameObject(BaseGameObject):
     def __init__(self, position: Vector2 = Vector2(0, 0), color: str = "pink"):
@@ -46,6 +45,8 @@ class GameObject(BaseGameObject):
         rectSize = self.size * 1.5
         thisRect = Rect(self.position.x, self.position.y, 0,0).inflate(rectSize,rectSize)
         for collideObject in gameLogic.gameObjects:
+            if isinstance(collideObject, Wall):
+                continue
             if collideObject is self:
                 continue
             otherRect = Rect(collideObject.position.x, collideObject.position.y, 0,0).inflate(rectSize,rectSize)
@@ -55,6 +56,29 @@ class GameObject(BaseGameObject):
 
         self.position += self.velocity
         self.velocity *= 0.95
+
+class Wall(GameObject):
+    def __init__(self, position: Vector2) -> None:
+        super().__init__(position=position, color="white")
+    
+    def update(self, gameLogic: GameLogic):
+        pass
+
+class Defender(GameObject):
+    def __init__(self):
+        super().__init__(color="green")
+        self.buildWall : bool = False
+
+    def placeWall(self):
+        self.buildWall = True
+
+    def update(self, gameLogic: GameLogic):
+        if self.buildWall:
+           gameLogic.gameObjects.append(Wall(position=self.position.copy()))
+            self.buildWall = False
+
+        super().update(gameLogic)
+
 
 class Castle(GameObject):
     def __init__(self, position: Vector2 = Vector2(1280, 400), color: str = "black"):
@@ -73,7 +97,7 @@ class Castle(GameObject):
 
 
 class Chaser(GameObject):
-    def __init__(self, chaseTarget: GameObject,  position: Vector2 = Vector2(0, 0), color: str = "green"):
+    def __init__(self, chaseTarget: GameObject,  position: Vector2 = Vector2(0, 0), color: str = "red"):
         self.speedFactor = 0.5
         self.chaseTarget = chaseTarget
         super().__init__(position, color)
